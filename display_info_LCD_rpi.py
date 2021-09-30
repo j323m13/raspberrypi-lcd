@@ -46,6 +46,7 @@ def parse_ip():
     return ip
 
 # find external IP
+"""
 def getExternalIP():
     with open('/home/pi/Documents/getIP/externalIP.txt') as f:
         lines = f.readlines()
@@ -54,7 +55,7 @@ def getExternalIP():
         print(externalIP)
         f.close()
         return externalIP
-
+"""
 
 # run unix shell command, return as ASCII
 def run_cmd(cmd):
@@ -63,13 +64,18 @@ def run_cmd(cmd):
     return output.decode('ascii')
 
 # get CPU temp
-def getCPUTemperature():
+def get_CPU_temperature():
     res = os.popen("vcgencmd measure_temp").readline()
     return(res.replace("temp=","").replace("'C\n",""))
 
 # get CPU load
-def getCPULoad():
+def get_CPU_load():
     return str(os.popen("top -n1 | awk '/Cpu\(s\):/ {print $2}'").readline().strip())
+
+# get date and time
+def get_date_and_time():
+    date_time = datetime.now().strftime('%b %d  %H:%M:%S\n')
+    return date_time
 
 # wipe LCD screen before we start
 lcd.clear()
@@ -78,33 +84,35 @@ lcd.clear()
 sleep(2)
 interface = find_interface()
 ip_address = parse_ip()
+url = "curl https://ip.me/"
 
 while True:
-
-    # get external ip
-    externalIP = getExternalIP()
-
-    # date and time
-    lcd_line_1 = datetime.now().strftime('%b %d  %H:%M:%S\n')
+    i = 0
+    while i < 10:
+        # date and time
+        lcd_line_1 = get_date_and_time()
+        
+        #cpu temp and CPU load
+        lcd_line_2  = "CPU:"+get_CPU_temperature()+"C "+get_CPU_load()+"%\n"
     
-    #cpu temp and CPU load
-    CPUTemperature = getCPUTemperature()
-    CPULoad = getCPULoad()
-    lcd_line_2  = "CPU:"+CPUTemperature+"C "+CPULoad+"%\n"
-   
-    # combine both lines into one update to the display
-    lcd.message = lcd_line_1 + lcd_line_2
+        # combine both lines into one update to the display
+        lcd.message = lcd_line_1 + lcd_line_2
+        i++
 
-    sleep(2)
+    sleep(1)
     lcd.clear()
 
-    lcd_line_1 = "IP "+externalIP
+    #check external IP
+    externalIP = un_cmd(url)
+
+    #set ip results for displaying
+    lcd_line_1 = "IP "+externalIP[1:]
     lcd_line_2 = "IP "+ip_address
 
     # combine both lines into one update to the display
     lcd.message = lcd_line_1 + lcd_line_2
 
-    sleep(2)
+    sleep(3)
     lcd.clear()
 
 if __name__ == '__main__':
