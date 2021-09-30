@@ -8,9 +8,6 @@ This script displays the following infos:
 5. CPU load
 
 
-For the external IP, the python script reads the data from a file. This file has been created by a simple bash script:
-''' curl https://ip.me > externalIP.txt'''
-
 That's it. 
 
 
