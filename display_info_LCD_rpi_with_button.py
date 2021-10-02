@@ -6,6 +6,7 @@ import os
 import board
 import digitalio
 import adafruit_character_lcd.character_lcd as characterlcd
+from RPi import GPIO
 
 # Modify this if you have a different sized character LCD
 lcd_columns = 16
