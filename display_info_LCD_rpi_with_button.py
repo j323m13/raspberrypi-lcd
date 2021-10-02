@@ -97,7 +97,7 @@ def display_date_time_cpu_temp_load():
         sleep(1)
 
 # display private and external ip 
-def display private_external_ip(url):
+def display_private_external_ip(url):
     #check external IP
     externalIP = run_cmd(url)
 
