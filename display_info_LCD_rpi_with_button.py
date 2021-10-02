@@ -12,7 +12,7 @@ lcd_columns = 16
 lcd_rows = 2
 
 #set button
-GPIO.setmode(GPIOBCM)
+GPIO.setmode(GPIO.BCM)
 GPIO.setup(12, GPIO.IN)
 
 # compatible with all versions of RPI as of Jan. 2019
