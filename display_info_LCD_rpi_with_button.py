@@ -133,7 +133,7 @@ while True:
         display_date_time_cpu_temp_load()
         lcd.clear()
     if(view == 1):
-        display_date_time_cpu_temp_load(url)
+        display_private_external_ip(url)
         lcd.clear()
 
 if __name__ == '__main__':
