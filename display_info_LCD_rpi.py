@@ -97,13 +97,13 @@ while True:
     
         # combine both lines into one update to the display
         lcd.message = lcd_line_1 + lcd_line_2
-        i++
-
-    sleep(1)
+        i+=1
+        sleep(1)
+    
     lcd.clear()
 
     #check external IP
-    externalIP = un_cmd(url)
+    externalIP = run_cmd(url)
 
     #set ip results for displaying
     lcd_line_1 = "IP "+externalIP[1:]
