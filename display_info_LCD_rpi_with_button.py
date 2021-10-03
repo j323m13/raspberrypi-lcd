@@ -100,7 +100,21 @@ def display_private_external_ip(url):
     # combine both lines into one update to the display
     lcd.message = lcd_line_1 + lcd_line_2
     sleep(1)
-  
+
+# display fan speed
+def display_fan_speed(speed):
+    lcd_line_1 = "Fan speed: \n"
+    lcd_line_2 = str(speed)+"%"
+    lcd.message = lcd_line_1 + lcd_line_2
+    sleep(1)
+
+# display soap level
+def display_soap_level():
+    lcd_line_1 = "Soap level: \n"
+    lcd_line_2 = str(50)+"%"
+    lcd.message = lcd_line_1 + lcd_line_2
+    sleep(1)
+
 # wipe LCD screen before we start
 lcd.clear()
 
@@ -114,7 +128,7 @@ print(view)
 speed = 50
 while True:
     if not button1.value:
-        print("->")
+        print("next menu :"+view)
         if view ==4:
             view =1
         else:
@@ -123,7 +137,7 @@ while True:
         lcd.clear()
         sleep(.25)
     if not button2.value:
-        print("|")
+        print("update value: "+speed)
         if speed == 100:
             speed = 0
         else:
@@ -136,15 +150,9 @@ while True:
     if view==2:
         display_private_external_ip(url)
     if view==3:
-        lcd_line_1 = "Soap level: \n"
-        lcd_line_2 = str(50)+"%"
-        lcd.message = lcd_line_1 + lcd_line_2
-        sleep(1)
+        display_soap_level()
     if view==4:
-        lcd_line_1 = "Fan speed: \n"
-        lcd_line_2 = str(speed)+"%"
-        lcd.message = lcd_line_1 + lcd_line_2
-        sleep(1)
+        display_fan_speed(speed)
 
     sleep(.25)
 
