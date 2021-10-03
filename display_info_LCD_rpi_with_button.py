@@ -94,7 +94,7 @@ def display_private_external_ip(url):
     #externalIP = run_cmd(url)
 
     #set ip results for displaying
-    lcd_line_1 = "IP "+"12345678\n"#externalIP[1:]
+    lcd_line_1 = "IP "+externalIP[1:]
     lcd_line_2 = "IP "+ip_address
 
     # combine both lines into one update to the display
@@ -118,14 +118,20 @@ def display_soap_level():
 # wipe LCD screen before we start
 lcd.clear()
 
+#set default values
+def set_default_values():
+    interface = find_interface()
+    ip_address = parse_ip() 
+    url = "curl https://ip.me/"
+    externalIP_tmp = run_cmd(url)
+    view = 4
+    speed = 50
+    return ip_address,view,speed,externalIP_tmp
+
 # before we start the main loop - detect active network device and ip address
 sleep(2)
-interface = find_interface()
-ip_address = parse_ip()
-url = "curl https://ip.me/"
-view = 4
-print(view)
-speed = 50
+set_default_values()
+
 while True:
     if not button1.value:
         print("next menu :"+str(view))
