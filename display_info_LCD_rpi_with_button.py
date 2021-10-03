@@ -137,7 +137,7 @@ while True:
         lcd.clear()
         sleep(.25)
     if not button2.value:
-        print("update value: "+str(speed))
+        print("update value: "+str(speed+10))
         if speed == 100:
             speed = 0
         else:
