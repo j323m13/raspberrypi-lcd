@@ -12,10 +12,6 @@ from RPi import GPIO
 lcd_columns = 16
 lcd_rows = 2
 
-#set button
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(12, GPIO.IN)
-
 # compatible with all versions of RPI as of Jan. 2019
 # v1 - v3B+
 lcd_rs = digitalio.DigitalInOut(board.D22)
@@ -24,6 +20,15 @@ lcd_d4 = digitalio.DigitalInOut(board.D25)
 lcd_d5 = digitalio.DigitalInOut(board.D24)
 lcd_d6 = digitalio.DigitalInOut(board.D23)
 lcd_d7 = digitalio.DigitalInOut(board.D18)
+
+
+button1 = digitalio.DigitalInOut(board.D16)
+button1.direction = digitalio.Direction.INPUT
+button1.pull = digitalio.Pull.UP
+
+button2 = digitalio.DigitalInOut(board.D20)
+button2.direction = digitalio.Direction.INPUT
+button2.pull = digitalio.Pull.UP
 
 
 # Initialise the lcd class
@@ -50,17 +55,6 @@ def parse_ip():
             ip = ip.split('/')[0]
     return ip
 
-# find external IP
-"""
-def getExternalIP():
-    with open('/home/pi/Documents/getIP/externalIP.txt') as f:
-        lines = f.readlines()
-        externalIP_tmp = lines.pop(0)
-        externalIP = str(externalIP_tmp)
-        print(externalIP)
-        f.close()
-        return externalIP
-"""
 
 # run unix shell command, return as ASCII
 def run_cmd(cmd):
@@ -84,34 +78,29 @@ def get_date_and_time():
 
 # display date time and cpu temperature and load
 def display_date_time_cpu_temp_load():
-    i = 0
-    while i < 10:
-        # date and time
-        lcd_line_1 = get_date_and_time()
+    # date and time
+    lcd_line_1 = get_date_and_time()
         
-        #cpu temp and CPU load
-        lcd_line_2  = "CPU:"+get_CPU_temperature()+"C "+get_CPU_load()+"%\n"
+    #cpu temp and CPU load
+    lcd_line_2  = "CPU:"+get_CPU_temperature()+"C "+get_CPU_load()+"%\n"
     
-        # combine both lines into one update to the display
-        lcd.message = lcd_line_1 + lcd_line_2
-        i+=1
-        sleep(1)
+    # combine both lines into one update to the display
+    lcd.message = lcd_line_1 + lcd_line_2
+    sleep(1)
 
 # display private and external ip 
 def display_private_external_ip(url):
     #check external IP
-    externalIP = run_cmd(url)
+    #externalIP = run_cmd(url)
 
     #set ip results for displaying
-    lcd_line_1 = "IP "+externalIP[1:]
+    lcd_line_1 = "IP "+"12345678\n"#externalIP[1:]
     lcd_line_2 = "IP "+ip_address
 
     # combine both lines into one update to the display
     lcd.message = lcd_line_1 + lcd_line_2
-
-    #display for 3 seconds
-    sleep(3)
-
+    sleep(1)
+  
 # wipe LCD screen before we start
 lcd.clear()
 
@@ -120,21 +109,46 @@ sleep(2)
 interface = find_interface()
 ip_address = parse_ip()
 url = "curl https://ip.me/"
-view = 0
-
+view = 4
+print(view)
+speed = 50
 while True:
-    if(GPIO.input(12) == 0):
-        if(view == 0):
-            view = 1
+    if not button1.value:
+        print("->")
+        if view ==4:
+            view =1
         else:
-            view = 0
-    
-    if(view == 0):
+            view = view+1
+        print(view)
+        lcd.clear()
+        sleep(.25)
+    if not button2.value:
+        print("|")
+        if speed == 100:
+            speed = 0
+        else:
+            speed = speed + 10
+        lcd.clear()
+        sleep(.25)
+
+    if view==1:
         display_date_time_cpu_temp_load()
-        lcd.clear()
-    if(view == 1):
+    if view==2:
         display_private_external_ip(url)
-        lcd.clear()
+    if view==3:
+        lcd_line_1 = "Soap level: \n"
+        lcd_line_2 = str(50)+"%"
+        lcd.message = lcd_line_1 + lcd_line_2
+        sleep(1)
+    if view==4:
+        lcd_line_1 = "Fan speed: \n"
+        lcd_line_2 = str(speed)+"%"
+        lcd.message = lcd_line_1 + lcd_line_2
+        sleep(1)
+
+    sleep(.25)
+
+
 
 if __name__ == '__main__':
 
