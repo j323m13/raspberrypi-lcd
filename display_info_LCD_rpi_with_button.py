@@ -35,6 +35,16 @@ button2.pull = digitalio.Pull.UP
 lcd = characterlcd.Character_LCD_Mono(lcd_rs, lcd_en, lcd_d4, lcd_d5, lcd_d6,
                                       lcd_d7, lcd_columns, lcd_rows)
 
+# Initialise default values:
+interface = "" 
+ip_address = ""
+url = ""
+externalIP_tmp = ""
+externalIP = ""
+view = 0
+speed = 0
+
+
 # looking for an active Ethernet or WiFi device
 def find_interface():
     find_device = "ip addr show"
@@ -88,18 +98,25 @@ def display_date_time_cpu_temp_load():
     lcd.message = lcd_line_1 + lcd_line_2
     sleep(1)
 
-# display private and external ip 
-def display_private_external_ip(url):
+#get external IP
+def get_external_IP(url):
     #check external IP
-    #externalIP = run_cmd(url)
+    externalIP = run_cmd(url)
+    return externalIP
 
+# display private and external ip 
+def display_private_external_ip():
+    url = "curl https://ip.me/"
+    externalIP = get_external_IP(url)
     #set ip results for displaying
     lcd_line_1 = "IP "+externalIP[1:]
     lcd_line_2 = "IP "+ip_address
 
     # combine both lines into one update to the display
     lcd.message = lcd_line_1 + lcd_line_2
+    
     sleep(1)
+    
 
 # display fan speed
 def display_fan_speed(speed):
@@ -119,42 +136,37 @@ def display_soap_level():
 lcd.clear()
 
 #set default values
-def set_default_values():
-    interface = find_interface()
-    ip_address = parse_ip() 
-    url = "curl https://ip.me/"
-    externalIP_tmp = run_cmd(url)
-    view = 4
-    speed = 50
-    return ip_address,view,speed,externalIP_tmp
-
-# before we start the main loop - detect active network device and ip address
+#before we start the main loop - detect active network device and ip address
 sleep(2)
-set_default_values()
+interface = find_interface()
+ip_address = parse_ip() 
+view = 2
+speed = 50
+
 
 while True:
     if not button1.value:
-        print("next menu :"+str(view))
         if view ==4:
             view =1
         else:
             view = view+1
         print(view)
+        print("next menu :"+str(view))
         lcd.clear()
         sleep(.25)
     if not button2.value:
-        print("update value: "+str(speed+10))
         if speed == 100:
             speed = 0
         else:
             speed = speed + 10
+        print("update value: "+str(speed))
         lcd.clear()
         sleep(.25)
 
     if view==1:
         display_date_time_cpu_temp_load()
     if view==2:
-        display_private_external_ip(url)
+        display_private_external_ip()
     if view==3:
         display_soap_level()
     if view==4:
