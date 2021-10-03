@@ -128,7 +128,7 @@ print(view)
 speed = 50
 while True:
     if not button1.value:
-        print("next menu :"+view)
+        print("next menu :"+str(view))
         if view ==4:
             view =1
         else:
@@ -137,7 +137,7 @@ while True:
         lcd.clear()
         sleep(.25)
     if not button2.value:
-        print("update value: "+speed)
+        print("update value: "+str(speed))
         if speed == 100:
             speed = 0
         else:
