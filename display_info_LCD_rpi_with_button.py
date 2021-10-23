@@ -14,21 +14,21 @@ lcd_rows = 2
 
 # compatible with all versions of RPI as of Jan. 2019
 # v1 - v3B+
-lcd_rs = digitalio.DigitalInOut(board.D22)
+lcd_rs = digitalio.DigitalInOut(board.D4)
 lcd_en = digitalio.DigitalInOut(board.D17)
-lcd_d4 = digitalio.DigitalInOut(board.D25)
-lcd_d5 = digitalio.DigitalInOut(board.D24)
+lcd_d4 = digitalio.DigitalInOut(board.D18)
+lcd_d5 = digitalio.DigitalInOut(board.D22)
 lcd_d6 = digitalio.DigitalInOut(board.D23)
-lcd_d7 = digitalio.DigitalInOut(board.D18)
+lcd_d7 = digitalio.DigitalInOut(board.D24)
 
 
 button1 = digitalio.DigitalInOut(board.D16)
-button1.direction = digitalio.Direction.INPUT
-button1.pull = digitalio.Pull.UP
+#button1.direction = digitalio.Direction.INPUT
+#button1.pull = digitalio.Pull.UP
 
 button2 = digitalio.DigitalInOut(board.D20)
-button2.direction = digitalio.Direction.INPUT
-button2.pull = digitalio.Pull.UP
+#button2.direction = digitalio.Direction.INPUT
+#button2.pull = digitalio.Pull.UP
 
 
 # Initialise the lcd class
@@ -145,7 +145,7 @@ speed = 50
 
 
 while True:
-    if not button1.value:
+    if button1.value:
         if view ==4:
             view =1
         else:
@@ -154,7 +154,7 @@ while True:
         print("next menu :"+str(view))
         lcd.clear()
         sleep(.25)
-    if not button2.value:
+    if button2.value:
         if speed == 100:
             speed = 0
         else:
